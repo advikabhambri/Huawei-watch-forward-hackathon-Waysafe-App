@@ -10,17 +10,35 @@ import StatusPill from "../components/StatusPill";
 import { colors, shadows } from "../theme/colors";
 
 export default function EmergencyContactsScreen() {
-  const { contacts, addContact, setPrimaryContact } = useApp();
+  const { contacts, addContact, updateContact, deleteContact, setPrimaryContact } = useApp();
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [relation, setRelation] = useState("");
+  const [editingId, setEditingId] = useState(null);
 
-  const handleAdd = () => {
-    if (!name.trim() || !phone.trim() || !relation.trim()) return;
-    addContact({ name: name.trim(), phone: phone.trim(), relation: relation.trim() });
+  const resetForm = () => {
+    setEditingId(null);
     setName("");
     setPhone("");
     setRelation("");
+  };
+
+  const handleSave = () => {
+    if (!name.trim() || !phone.trim() || !relation.trim()) return;
+    if (editingId) {
+      updateContact(editingId, { name: name.trim(), phone: phone.trim(), relation: relation.trim() });
+      resetForm();
+      return;
+    }
+    addContact({ name: name.trim(), phone: phone.trim(), relation: relation.trim() });
+    resetForm();
+  };
+
+  const handleEdit = (contact) => {
+    setEditingId(contact.id);
+    setName(contact.name);
+    setPhone(contact.phone);
+    setRelation(contact.relation);
   };
 
   return (
@@ -31,7 +49,9 @@ export default function EmergencyContactsScreen() {
       />
 
       <SectionCard>
-        <Text style={styles.sectionTitle}>Add caregiver contact</Text>
+        <Text style={styles.sectionTitle}>
+          {editingId ? "Edit caregiver contact" : "Add caregiver contact"}
+        </Text>
         <View style={styles.form}>
           <TextInput
             value={name}
@@ -58,11 +78,16 @@ export default function EmergencyContactsScreen() {
         </View>
 
         <PrimaryButton
-          label="Save Contact"
+          label={editingId ? "Update Contact" : "Save Contact"}
           variant="danger"
           icon={<MaterialCommunityIcons name="content-save-outline" size={20} color={colors.white} />}
-          onPress={handleAdd}
+          onPress={handleSave}
         />
+        {editingId ? (
+          <Text style={styles.cancelEdit} onPress={resetForm}>
+            Cancel editing
+          </Text>
+        ) : null}
       </SectionCard>
 
       <SectionCard>
@@ -82,10 +107,27 @@ export default function EmergencyContactsScreen() {
                 <Text style={styles.contactPhone}>{contact.phone}</Text>
               </View>
               {!contact.primary ? (
-                <Text style={styles.makePrimary} onPress={() => setPrimaryContact(contact.id)}>
-                  Make primary
-                </Text>
-              ) : null}
+                <View style={styles.actions}>
+                  <Text style={styles.editAction} onPress={() => handleEdit(contact)}>
+                    Edit
+                  </Text>
+                  <Text style={styles.deleteAction} onPress={() => deleteContact(contact.id)}>
+                    Delete
+                  </Text>
+                  <Text style={styles.makePrimary} onPress={() => setPrimaryContact(contact.id)}>
+                    Make primary
+                  </Text>
+                </View>
+              ) : (
+                <View style={styles.actions}>
+                  <Text style={styles.editAction} onPress={() => handleEdit(contact)}>
+                    Edit
+                  </Text>
+                  <Text style={styles.deleteAction} onPress={() => deleteContact(contact.id)}>
+                    Delete
+                  </Text>
+                </View>
+              )}
             </View>
           ))}
         </View>
@@ -129,6 +171,12 @@ const styles = StyleSheet.create({
   list: {
     gap: 12,
   },
+  cancelEdit: {
+    marginTop: 12,
+    color: colors.muted,
+    fontWeight: "700",
+    textAlign: "center",
+  },
   contactCard: {
     flexDirection: "row",
     alignItems: "flex-start",
@@ -171,10 +219,24 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     color: colors.navy,
   },
-  makePrimary: {
+  actions: {
+    gap: 8,
+    alignItems: "flex-end",
+    paddingTop: 5,
+  },
+  editAction: {
+    color: colors.navy,
+    fontWeight: "800",
+    fontSize: 12,
+  },
+  deleteAction: {
     color: colors.red,
     fontWeight: "800",
     fontSize: 12,
-    paddingTop: 5,
+  },
+  makePrimary: {
+    color: colors.success,
+    fontWeight: "800",
+    fontSize: 12,
   },
 });

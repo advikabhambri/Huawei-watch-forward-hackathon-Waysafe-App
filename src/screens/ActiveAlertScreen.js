@@ -30,13 +30,13 @@ export default function ActiveAlertScreen({ navigation, route }) {
   const emergencyType = route.params?.emergencyType || activeAlert?.type || "Emergency Alert";
   const supportMessages = supportCopy[selectedProfile.id] || selectedProfile.supportMessages;
 
-  const handleSendSOS = () => {
-    sendSOS(emergencyType);
+  const handleSendSOS = async () => {
+    await sendSOS(emergencyType);
     navigation.navigate("SOSConfirmation", { emergencyType });
   };
 
-  const handleMarkSafe = () => {
-    markSafe();
+  const handleMarkSafe = async () => {
+    await markSafe();
     navigation.navigate("MainTabs", { screen: "Home" });
   };
 

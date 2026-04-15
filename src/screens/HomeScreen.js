@@ -15,14 +15,14 @@ import { formatRelativeTime } from "../utils/formatters";
 export default function HomeScreen({ navigation }) {
   const { selectedProfile, alertRecords, triggerAlert, sendSOS, activeAlert } = useApp();
 
-  const handleAction = (type) => {
+  const handleAction = async (type) => {
     if (type === "SOS Request") {
-      const sos = sendSOS(type);
-      navigation.navigate("SOSConfirmation", { emergencyType: sos.emergencyType });
+      await sendSOS(type);
+      navigation.navigate("SOSConfirmation", { emergencyType: type });
       return;
     }
 
-    triggerAlert(type);
+    await triggerAlert(type);
     navigation.navigate("ActiveAlert", { emergencyType: type });
   };
 
@@ -91,10 +91,15 @@ export default function HomeScreen({ navigation }) {
                 <MaterialCommunityIcons name="alert-circle-outline" size={20} color={colors.red} />
               </View>
               <View style={styles.alertCopy}>
-                <Text style={styles.alertTitle}>{alert.type}</Text>
-                <Text style={styles.alertTime}>{formatRelativeTime(alert.timestamp)}</Text>
+                <Text style={styles.alertTitle}>{alert.title || alert.type}</Text>
+                <Text style={styles.alertTime}>
+                  {formatRelativeTime(alert.timestamp || alert.createdAt || alert.resolvedAt)}
+                </Text>
               </View>
-              <StatusPill label={alert.status} tone={alert.status === "Resolved" ? "resolved" : "pending"} />
+              <StatusPill
+                label={alert.status}
+                tone={String(alert.status).toLowerCase() === "resolved" ? "resolved" : "pending"}
+              />
             </View>
           ))}
         </View>
