@@ -1,0 +1,20 @@
+{
+  "expo": {
+    "name": "WaySafe",
+    "slug": "waysafe",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "platforms": ["android", "ios", "web"],
+    "userInterfaceStyle": "light",
+    "android": {
+      "adaptiveIconBackgroundColor": "#0B1F36",
+      "package": "com.waysafe.app"
+    },
+    "ios": {
+      "supportsTablet": false
+    },
+    "web": {
+      "bundler": "metro"
+    }
+  }
+}
