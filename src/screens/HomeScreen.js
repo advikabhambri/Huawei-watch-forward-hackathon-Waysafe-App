@@ -13,7 +13,7 @@ import ScreenHeader from "../components/ScreenHeader";
 import { formatRelativeTime } from "../utils/formatters";
 
 export default function HomeScreen({ navigation }) {
-  const { selectedProfile, alertRecords, triggerAlert, sendSOS, activeAlert } = useApp();
+  const { selectedProfile, alertRecords, triggerAlert, sendSOS, activeAlert, lastSOS } = useApp();
 
   const handleAction = async (type) => {
     if (type === "SOS Request") {
@@ -103,6 +103,28 @@ export default function HomeScreen({ navigation }) {
             </View>
           ))}
         </View>
+      </SectionCard>
+
+      <SectionCard>
+        <ScreenHeader title="Latest SOS Status" subtitle="Synced from watch and backend notification flow." />
+        {lastSOS?.time ? (
+          <View style={styles.sosCard}>
+            <Text style={styles.sosTitle}>
+              {String(lastSOS.emergencyType || "Emergency").toUpperCase()} SOS at{" "}
+              {formatRelativeTime(lastSOS.time)}
+            </Text>
+            <Text style={styles.sosMeta}>
+              Notified contacts: {(lastSOS.notifiedContacts || []).length}
+            </Text>
+            {(lastSOS.notifiedContacts || []).slice(0, 3).map((contact) => (
+              <Text key={contact.id || `${contact.contactPhone}-${contact.timestamp}`} style={styles.sosMeta}>
+                - {contact.contactName || contact.name} ({contact.contactPhone || contact.phone}) [{contact.status}]
+              </Text>
+            ))}
+          </View>
+        ) : (
+          <Text style={styles.sosMeta}>No SOS events yet.</Text>
+        )}
       </SectionCard>
 
       <SectionCard>
@@ -260,6 +282,22 @@ const styles = StyleSheet.create({
   },
   alertList: {
     gap: 12,
+  },
+  sosCard: {
+    gap: 6,
+    backgroundColor: colors.background,
+    borderRadius: 16,
+    padding: 12,
+  },
+  sosTitle: {
+    color: colors.navy,
+    fontWeight: "800",
+    fontSize: 14,
+  },
+  sosMeta: {
+    color: colors.muted,
+    fontWeight: "700",
+    fontSize: 12,
   },
   alertRow: {
     flexDirection: "row",

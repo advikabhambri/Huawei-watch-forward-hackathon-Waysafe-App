@@ -12,6 +12,7 @@ import { formatDateTime } from "../utils/formatters";
 export default function SOSConfirmationScreen({ navigation, route }) {
   const { lastSOS } = useApp();
   const emergencyType = route.params?.emergencyType || lastSOS?.emergencyType || "SOS Request";
+  const notifiedContacts = lastSOS?.notifiedContacts || [];
 
   return (
     <View style={styles.screen}>
@@ -30,7 +31,11 @@ export default function SOSConfirmationScreen({ navigation, route }) {
         </View>
         <View style={styles.detailRow}>
           <MaterialCommunityIcons name="account-group-outline" size={20} color={colors.navy} />
-          <Text style={styles.detailText}>{lastSOS?.caregiverName || "Primary caregiver notified"}</Text>
+          <Text style={styles.detailText}>
+            {notifiedContacts.length > 0
+              ? `${notifiedContacts.length} emergency contacts notified`
+              : "No emergency contacts configured"}
+          </Text>
         </View>
         <View style={styles.detailRow}>
           <MaterialCommunityIcons name="map-marker-radius" size={20} color={colors.orange} />
@@ -38,8 +43,18 @@ export default function SOSConfirmationScreen({ navigation, route }) {
         </View>
         <View style={styles.detailRow}>
           <MaterialCommunityIcons name="clock-outline" size={20} color={colors.navy} />
-          <Text style={styles.detailText}>{formatDateTime(lastSOS?.sentAt || new Date().toISOString())}</Text>
+          <Text style={styles.detailText}>
+            {formatDateTime(lastSOS?.time || lastSOS?.sentAt || new Date().toISOString())}
+          </Text>
         </View>
+        {notifiedContacts.map((contact) => (
+          <View key={contact.id || `${contact.contactPhone}-${contact.timestamp}`} style={styles.contactRow}>
+            <MaterialCommunityIcons name="check-circle-outline" size={18} color={colors.success} />
+            <Text style={styles.contactText}>
+              {contact.contactName || contact.name} ({contact.contactPhone || contact.phone}) - {contact.status}
+            </Text>
+          </View>
+        ))}
       </SectionCard>
 
       <PrimaryButton
@@ -101,6 +116,17 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 15,
     fontWeight: "800",
+    color: colors.navy,
+  },
+  contactRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  contactText: {
+    flex: 1,
+    fontSize: 13,
+    fontWeight: "700",
     color: colors.navy,
   },
 });

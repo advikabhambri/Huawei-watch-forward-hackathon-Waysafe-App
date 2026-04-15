@@ -70,7 +70,7 @@ export function AppProvider({ children }) {
       setActiveAlert(sharedState.activeEmergency || null);
       const history = historyResponse?.history || sharedState.history || [];
       setAlertRecords(history.map(mapHistoryRecord));
-      setLastSOS(sosResponse?.sos || sharedState.sos || null);
+      setLastSOS(sosResponse?.latestEvent || sosResponse?.sos || sharedState.sos || null);
       setSyncError(null);
     } catch (error) {
       setSyncError(error.message);
@@ -79,7 +79,7 @@ export function AppProvider({ children }) {
 
   useEffect(() => {
     hydrateFromBackend();
-    const intervalId = setInterval(hydrateFromBackend, 4000);
+    const intervalId = setInterval(hydrateFromBackend, 3000);
     return () => clearInterval(intervalId);
   }, []);
 
@@ -133,7 +133,7 @@ export function AppProvider({ children }) {
         location: "1.3521,103.8198",
         message: `SOS request from phone for ${emergencyType}`,
       });
-      setLastSOS(response.sos || null);
+      setLastSOS(response.latestEvent || response.sos || null);
       setSyncError(null);
       return response.sos || null;
     } catch (error) {
