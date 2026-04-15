@@ -39,7 +39,7 @@ export default function SafeRouteScreen({ navigation }) {
         <Text style={styles.sectionTitle}>Map Preview</Text>
         <View style={styles.mapPlaceholder}>
           <MaterialCommunityIcons name="map-outline" size={42} color={colors.navy} />
-          <Text style={styles.mapText}>Mock map placeholder for hackathon demo</Text>
+          <Text style={styles.mapText}>Map preview available in the next build</Text>
         </View>
       </SectionCard>
 

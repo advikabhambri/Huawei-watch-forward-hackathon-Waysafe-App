@@ -14,12 +14,18 @@ const settingsItems = [
   { title: "App info", icon: "information-outline" },
 ];
 
+const infoChips = [
+  { label: "WaySafe", icon: "shield-alert-outline" },
+  { label: "Emergency companion", icon: "heart-pulse" },
+  { label: "Accessible safety", icon: "accessibility" },
+];
+
 export default function SettingsScreen() {
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
       <ScreenHeader
         title="Settings"
-        subtitle="Manage preferences, contact options, and app information."
+        subtitle="Manage preferences, contacts, and accessibility controls."
       />
 
       <SectionCard>
@@ -37,11 +43,24 @@ export default function SettingsScreen() {
       </SectionCard>
 
       <SectionCard>
-        <Text style={styles.infoTitle}>WaySafe</Text>
-        <Text style={styles.infoText}>
-          Frontend-only hackathon prototype for an accessible emergency companion app built with
-          React Native and Expo.
-        </Text>
+        <View style={styles.footerTop}>
+          <View style={styles.footerIcon}>
+            <MaterialCommunityIcons name="shield-alert-outline" size={22} color={colors.white} />
+          </View>
+          <View style={styles.footerCopy}>
+            <Text style={styles.infoTitle}>WaySafe</Text>
+            <Text style={styles.infoText}>Accessible emergency support for travelers and caregivers.</Text>
+          </View>
+        </View>
+
+        <View style={styles.infoRow}>
+          {infoChips.map((chip) => (
+            <View key={chip.label} style={styles.infoChip}>
+              <MaterialCommunityIcons name={chip.icon} size={18} color={colors.navy} />
+              <Text style={styles.infoChipText}>{chip.label}</Text>
+            </View>
+          ))}
+        </View>
       </SectionCard>
     </ScrollView>
   );
@@ -85,7 +104,42 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "900",
     color: colors.navy,
-    marginBottom: 8,
+  },
+  footerTop: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    marginBottom: 14,
+  },
+  footerIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 16,
+    backgroundColor: colors.navy,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  footerCopy: {
+    flex: 1,
+  },
+  infoRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 10,
+  },
+  infoChip: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 999,
+    backgroundColor: colors.background,
+  },
+  infoChipText: {
+    fontSize: 13,
+    fontWeight: "800",
+    color: colors.navy,
   },
   infoText: {
     fontSize: 14,

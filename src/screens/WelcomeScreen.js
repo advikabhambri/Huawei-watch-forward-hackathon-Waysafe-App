@@ -21,10 +21,10 @@ export default function WelcomeScreen({ navigation }) {
       </View>
 
       <View style={styles.panel}>
-        <Text style={styles.panelTitle}>Emergency companion for travelers</Text>
+        <Text style={styles.panelTitle}>Fast help, clear actions</Text>
         <Text style={styles.panelText}>
-          Manage accessibility profiles, alert caregivers, and guide the user through
-          serious incidents with large, clear controls.
+          Built for accessible emergency response with large controls, caregiver support,
+          and simple navigation.
         </Text>
 
         <View style={styles.featureRow}>

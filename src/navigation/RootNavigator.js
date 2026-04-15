@@ -1,5 +1,5 @@
 import React from "react";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, DarkTheme } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import WelcomeScreen from "../screens/WelcomeScreen";
@@ -11,14 +11,26 @@ import { colors } from "../theme/colors";
 
 const Stack = createNativeStackNavigator();
 
+const navigationTheme = {
+  ...DarkTheme,
+  colors: {
+    ...DarkTheme.colors,
+    background: colors.navyDark,
+    card: colors.navyDark,
+    text: colors.white,
+    border: colors.border,
+    primary: colors.red,
+  },
+};
+
 export default function RootNavigator() {
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={navigationTheme}>
       <Stack.Navigator
         initialRouteName="Welcome"
         screenOptions={{
           headerShown: false,
-          contentStyle: { backgroundColor: colors.background },
+          contentStyle: { backgroundColor: "transparent" },
         }}
       >
         <Stack.Screen name="Welcome" component={WelcomeScreen} />
